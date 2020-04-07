@@ -44,7 +44,7 @@ using namespace std;
 /********** biSBM **********/
 extern "C" 
 { 
-  void rFunction(double* el, int* Nel, double* nodes, int* Nnodes, int *nA, int *nB, int *dc, int *iter, int* g)
+  void rFunction(double* el, int* Nel, double* nodes, int* Nnodes, int *nA, int *nB, int *dc, int *iter, int* g, double* score)
   {
     //srandom(time(NULL));
     srand(time(NULL));
@@ -145,7 +145,7 @@ extern "C"
       g[i] = BestState[i];
       
     }
-    
+    score[0] = MaxScore;
    }
   
 } 

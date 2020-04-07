@@ -78,6 +78,23 @@ biSBM <- function(data, nodeType, ka, kb, deg.corr=1, iter=10){
   
   ### calling C++ algorithm and returning the partition
   res <-integer(length(nodeType));
-  .C("rFunction", as.numeric(data), nrow(data), nodeType, length(nodeType), as.integer(ka), 
-     as.integer(kb), as.integer(deg.corr), as.integer(iter), res=res)$res + 1;
+  score <- numeric(1)
+  
+  output <- .C("rFunction", as.numeric(data), nrow(data), nodeType, length(nodeType), as.integer(ka), 
+               as.integer(kb), as.integer(deg.corr), as.integer(iter), res = res, score = score)
+  structure(list(score = output$score, groups = output$res+1),
+            class = "biSBM",
+            a_grps = ka,
+            b_grps = kb)
+  
+}
+
+print.biSBM <- function(x) {
+  end_grps <- min(length(x$groups), 50)
+  cat("A bi-modal, stochastic block modelling output.\n")
+  cat("Number of groups for node type 1:", attr(x, "a_grps"))
+  cat("\nNumber of groups for node type 2:", attr(x, "b_grps"))
+  cat("\nBest score:", x$score)
+  cat("\n", deparse(substitute(x)), "$groups:\n", sep = "")
+  cat(x$groups[1:end_grps], "...")
 }
